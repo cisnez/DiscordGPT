@@ -1,8 +1,8 @@
 import asyncio
 import discord
 from custom_bot import CustomBot
-from bot1_config import bot1_config
-from bot2_config import bot2_config
+from be_jaya_cfg import bot1_config
+from be_clair_cfg import bot2_config
 
 async def run_bot(bot):
     await bot.start(bot.discord_app_token)

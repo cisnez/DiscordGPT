@@ -1,7 +1,7 @@
 # My bot config files.
-bot1_config.py
-bot2_config.py
+be_*_cfg.py
 tokens_config.py
+tokens.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
