@@ -4,21 +4,21 @@
 A Discord bot using Discord API and OpenAI API to provide conversational functionality.
 
 ## Files
-DiscordGPT/
-│
-├─ config/
-│   ├─ bot_config.yaml
-│   └─ tokens.py
-│
-├─ discordgpt/
-│   ├─ __init__.py
-│   ├─ build_my_bot.py
-│   ├─ add_commands.py
-│   └─ models/
-│       └─ __init__.py
-│
-└─ tests/
-    └─ __init__.py
+DiscordGPT/  
+│  
+├─ config/  
+│   ├─ bot_config.yaml  
+│   └─ tokens.py  
+│  
+├─ discordgpt/  
+│   ├─ __init__.py  
+│   ├─ build_my_bot.py  
+│   ├─ add_commands.py  
+│   └─ models/  
+│       └─ __init__.py  
+│  
+└─ tests/  
+    └─ __init__.py  
 
 ## Usage
 1. Clone the repository to your local machine.
@@ -26,7 +26,7 @@ DiscordGPT/
 3. Configure your bot by creating a `be_whatever.yaml` file based on the `bot_config.yaml` template.
 4. Create file config/keys.py with your OpenAi API Key
 5. Create file config/tokens.py with your Discord Developer-Application-Bot-Token
-4. Run the bot using `python main.py`.
+6. Run the bot using `python main.py`.
 
 ## Note about Discord's Bot class.
 Here are the built-in properties and attributes specifically for`discord.ext.commands.Bot`:
