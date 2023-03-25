@@ -1,6 +1,6 @@
 # My bot config files.
-be_*_cfg.py
-tokens_config.py
+be_*.yaml
+keys.py
 tokens.py
 
 # Byte-compiled / optimized / DLL files

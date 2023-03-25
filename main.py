@@ -1,6 +1,6 @@
 import asyncio
 import discord
-from custom_bot import CustomBot
+from discordgpt.build_my_bot import CustomBot
 from be_jaya_cfg import bot1_config
 from be_clair_cfg import bot2_config
 
