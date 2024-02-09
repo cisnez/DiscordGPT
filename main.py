@@ -11,7 +11,7 @@ bot_name = sys.argv[1].lower()
 
 # Get key and token from the OS environment
 openai.api_key = os.environ.get('OPENAI_API_KEY')
-bot_discord_token = os.environ.get(f'{bot_name.upper()}_TOKEN')
+bot_discord_token = os.environ.get(f'DISCORD_TOKEN')
 
 # Coroutine to run a bot instance
 async def run_bot(bot):

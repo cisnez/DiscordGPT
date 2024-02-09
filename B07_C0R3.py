@@ -15,6 +15,7 @@ class D15C0R6(commANDs.Bot):
         in_tents = InTeNTs(**bot_init_data["intents"])
         self.name = bot_name
         self.openai_api_key = openai_api_key
+        self.response_tokens = bot_init_data["response_tokens"]
         self.discord_token = discord_token
         self.command_prefix = bot_init_data["command_prefix"]
         
@@ -104,7 +105,7 @@ class D15C0R6(commANDs.Bot):
                 prompt_without_mention = message.content.replace(clean_message, "").strip()
                 # Add context to the prompt
                 logging.debug(f"Sending usr_prompt to ChatGPT\n{prompt_without_mention}")
-                response_text = await self.get_gpt_response("You are my pithy friend.", prompt_without_mention, self.gpt_model, 300, 2, 0.55)
+                response_text = await self.get_gpt_response(f"You are my pithy friend. Keep your response under {self.response_tokens} tokens.", prompt_without_mention, self.gpt_model, self.response_tokens, 2, 0.55)
                 if response_text:
                     await message.channel.send(response_text)
                     logging.debug(f"Response text:\n{response_text}")
