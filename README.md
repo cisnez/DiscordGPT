@@ -4,21 +4,7 @@
 A Discord bot using Discord `API` and OpenAI `API` to provide conversational functionality.
 
 ## Files
-DiscordGPT/  
-│  
-├─ config/  
-│   ├─ bot_config.yaml  
-│   └─ tokens.py  
-│  
-├─ discordgpt/  
-│   ├─ __init__.py  
-│   ├─ build_my_bot.py  
-│   ├─ add_commands.py  
-│   └─ models/  
-│       └─ __init__.py  
-│  
-└─ tests/  
-    └─ __init__.py  
+
 
 ## Usage
 1. Clone the repository to your local machine.

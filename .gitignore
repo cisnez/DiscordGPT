@@ -1,5 +1,5 @@
 # My bot config files.
-be_*.yaml
+*.yaml
 keys.py
 tokens.py
 

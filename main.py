@@ -1,37 +1,68 @@
+# B07.py
+import os
+import sys
+import yaml
 import asyncio
-import discord
-from discordgpt.build_my_bot import CustomBot
-from be_jaya_cfg import bot1_config
-from be_clair_cfg import bot2_config
+import openai
+from B07_C0R3 import D15C0R6
 
+# Bot name used for init file and Discord token
+bot_name = sys.argv[1].lower()
+
+# Get key and token from the OS environment
+openai.api_key = os.environ.get('OPENAI_API_KEY')
+bot_discord_token = os.environ.get(f'{bot_name.upper()}_TOKEN')
+
+# Coroutine to run a bot instance
 async def run_bot(bot):
-    await bot.start(bot.discord_app_token)
+    try:
+        await bot.start(bot.discord_token)
+    except KeyboardInterrupt:
+        await bot.close()
 
-async def main():
-    intents = discord.Intents.default()
-    intents.typing = False
-    intents.presences = False
+# Define function to run the main() coroutine
+# Main function to create, configure and run the bot instances
+async def run_bot_main():
+    # Load all required YAML files to initialize Discord Bot.
+    # Merge the global and child YAML files
+    config_files = ["_init__global.yaml", f"_init_{bot_name}.yaml"]
+    merged_config = merge_yaml_files(config_files)
+    bot_init_data = merged_config
+    # Create a new bot object using the YAML _init_bot file...
+    # and the D15C0R6 constructor class from 807_C0R3.py
+    bot = D15C0R6(openai.api_key, bot_discord_token, bot_init_data, bot_name)
+   
+    # Await the run_bot coroutine
+    await run_bot(bot)
 
-    bot1 = CustomBot(**bot1_config
+    # End the main method
+    quit()
 
+# Define function to merge global and personal configuration files
+def merge_yaml_files(file_paths):
+    merged_data = {}
+    for file_path in file_paths:
+        with open(file_path, "r", encoding='utf-8') as f:
+            data = yaml.safe_load(f)
+            for key, value in data.items():
+                if key not in merged_data:
+                    merged_data[key] = value
+                else:
+                    if value is None:  # If the value is None, do nothing.
+                        pass
+                    elif isinstance(value, list):
+                        if merged_data[key] is None:
+                            merged_data[key] = value
+                        else:
+                            merged_data[key] += value
+                    elif isinstance(value, dict):
+                        if merged_data[key] is None:
+                            merged_data[key] = value
+                        else:
+                            merged_data[key].update(value)
+                    else:  # If the value is not None, list, or dict, set the value.
+                        merged_data[key] = value
+    return merged_data
 
-import asyncio
-import bot1_config
-import bot2_config
-from custom_bot import CustomBot
-from bot_commands import BotCommands
-import discord
-
-async def main():
-    intents = discord.Intents.default()
-    intents.typing = False
-    intents.presences = False
-
-    bot1 = CustomBot(bot1_config.BOT_NAME, bot1_config.COMMAND_PREFIX, intents, bot1_config.DISCORD_APP_TOKEN, bot1_config.HELLO_CHANNEL_ID, "magenta")
-    bot2 = CustomBot(bot2_config.BOT_NAME, bot2_config.COMMAND_PREFIX, intents, bot2_config.DISCORD_APP_TOKEN, bot2_config.HELLO_CHANNEL_ID, "cyan")
-
-    BotCommands(bot1)
-    BotCommands(bot2)
-
-    await asyncio.g
-
+if __name__ == "__main__":
+    asyncio.run(run_bot_main())
