@@ -85,16 +85,6 @@ class D15C0R6(commANDs.Bot):
             logging.info('.hello')
             await message.channel.send("Hello Channel!")
         
-        elif message.content.startswith('.schedulers'):
-            classes = self.sd_pipe_txt2img.scheduler.compatibles
-            class_names = ""
-            for cls in classes:
-                cls_str = str(cls)
-                cleaned_name = cls_str.replace("<class 'diffusers.schedulers.", "").replace("'>", "")
-                cleaned_name = re.sub(r'scheduling_.*?\.', '', cleaned_name)
-                class_names += f"{cleaned_name}\n"
-            await message.channel.send(f'**compatible schedulers**\n```{class_names}```\n{self.sd_pipe_txt2img.scheduler}')
-
         elif message.author.id in self.allow_author_ids:
             logging.info(f"Message from {message.author.name} received:\n{message.content}")
             # The bot will show as typing while executing the code inside this block
