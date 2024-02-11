@@ -95,7 +95,7 @@ class D15C0R6(commANDs.Bot):
                 prompt_without_mention = message.content.replace(clean_message, "").strip()
                 # Add context to the prompt
                 logging.debug(f"Sending usr_prompt to ChatGPT\n{prompt_without_mention}")
-                response_text = await self.get_gpt_response(f"You are my pithy friend. Keep your response under {self.response_tokens} tokens.", prompt_without_mention, self.gpt_model, self.response_tokens, 2, 0.55)
+                response_text = self.get_gpt_response(f"You are my pithy friend. Keep your response under {self.response_tokens} tokens.", prompt_without_mention, self.gpt_model, self.response_tokens, 2, 0.55)
                 if response_text:
                     await message.channel.send(response_text)
                     logging.debug(f"Response text:\n{response_text}")
@@ -112,7 +112,7 @@ class D15C0R6(commANDs.Bot):
         await self.process_commands(message)
         logging.debug(f'\n-- END ON_MESSAGE --\n')
 
-    async def get_message_history(self, channel_id, count):
+    def get_message_history(self, channel_id, count):
         channel = await self.fetch_channel(channel_id)
         messages = []
         async for message in channel.history(limit=count):
@@ -125,7 +125,7 @@ class D15C0R6(commANDs.Bot):
             })
         return context
 
-    async def get_gpt_response(self, sys_prompt, usr_prompt, model, max_tokens, n_responses, creativity):
+    def get_gpt_response(self, sys_prompt, usr_prompt, model, max_tokens, n_responses, creativity):
         logging.info(f"System prompt:\n{sys_prompt}")
         try:
             completions = openai.ChatCompletion.create(
