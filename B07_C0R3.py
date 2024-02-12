@@ -113,9 +113,9 @@ class D15C0R6(commANDs.Bot):
         logging.debug(f'\n-- END ON_MESSAGE --\n')
 
     def get_message_history(self, channel_id, count):
-        channel = await self.fetch_channel(channel_id)
+        channel = self.fetch_channel(channel_id)
         messages = []
-        async for message in channel.history(limit=count):
+        for message in channel.history(limit=count):
             messages.append(message)
         context = []
         for message in messages:
