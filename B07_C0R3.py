@@ -34,6 +34,10 @@ class D15C0R6(commANDs.Bot):
         self.allow_channel_ids = set(bot_init_data["allow_channel_ids"])
         self.ignore_author_ids = set(bot_init_data["ignore_author_ids"])
         self.ignore_channel_ids = set(bot_init_data["ignore_channel_ids"])
+        #Set the first message in messages array
+        self.messages = [{
+        "role": "system", "content": f"You are my pithy friend. Keep your response under {self.response_tokens} tokens."
+            }]
         # Parent class assignments for: super().__init__()
         super().__init__(command_prefix=self.command_prefix, intents=in_tents)
 
@@ -93,14 +97,15 @@ class D15C0R6(commANDs.Bot):
                 # Remove bot's mention from the message
                 clean_message = UtIls.remove_markdown(str(self.user.mention))
                 prompt_without_mention = message.content.replace(clean_message, "").strip()
+                prompt_without_mention = self.add_to_messages(prompt_without_mention, "user")
                 # Add context to the prompt
                 logging.debug(f"Sending usr_prompt to ChatGPT\n{prompt_without_mention}")
-                messages = await self.build_messages(message.channel.id, 5)
-                logging.debug(f"sending messages\n{messages}")
-                response_text = self.get_gpt_response(messages, self.gpt_model, self.response_tokens, 2, 0.55)
+                logging.debug(f"Sending messages\n{self.messages}")
+                response_text = self.get_gpt_response(self.messages, self.gpt_model, self.response_tokens, 2, 0.55)
                 if response_text:
+                    self.add_to_messages(response_text, "assistant")
+                    logging.info(f"Message history:\n{self.messages}")
                     await message.channel.send(response_text)
-                    logging.debug(f"Response text:\n{response_text}")
                 else:
                     logging.error("No response from get_gpt_response")
         else:
@@ -114,20 +119,20 @@ class D15C0R6(commANDs.Bot):
         await self.process_commands(message)
         logging.debug(f'\n-- END ON_MESSAGE --\n')
 
-    async def build_messages(self, channel_id, count):
-        messages = [{
-            "role": "system", "content": f"You are my pithy friend. Keep your response under {self.response_tokens} tokens."
-             }]
-        channel = await self.fetch_channel(channel_id)
-        message_history = []
-        async for message in channel.history(limit=count):
-            message_history.append(message)
-        for message in message_history:
-            messages.insert(1, {
-                "role": "user",
-                "content": message.content
+    def add_to_messages(self, message, role):
+        if role == "assistant":
+            self.messages.append({
+                "role": "assistant",
+                "content": message
             })
-        return messages
+        elif role == "user":
+            self.messages.append({
+                "role": "user",
+                "content": message
+            })
+        if len(self.messages) >= 7:  # Keep 7 messages for example
+            del self.messages[1:2]
+        return self.messages
 
     def get_gpt_response(self, messages, model, max_response_tokens, n_responses, creativity):
         try:
