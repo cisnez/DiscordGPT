@@ -95,7 +95,9 @@ class D15C0R6(commANDs.Bot):
                 prompt_without_mention = message.content.replace(clean_message, "").strip()
                 # Add context to the prompt
                 logging.debug(f"Sending usr_prompt to ChatGPT\n{prompt_without_mention}")
-                response_text = self.get_gpt_response(f"You are my pithy friend. Keep your response under {self.response_tokens} tokens.", prompt_without_mention, self.gpt_model, self.response_tokens, 2, 0.55)
+                messages = await self.build_messages(message.channel.id, 5)
+                logging.debug(f"sending messages\n{messages}")
+                response_text = self.get_gpt_response(messages, self.gpt_model, self.response_tokens, 2, 0.55)
                 if response_text:
                     await message.channel.send(response_text)
                     logging.debug(f"Response text:\n{response_text}")
@@ -112,30 +114,32 @@ class D15C0R6(commANDs.Bot):
         await self.process_commands(message)
         logging.debug(f'\n-- END ON_MESSAGE --\n')
 
-    def get_message_history(self, channel_id, count):
-        channel = self.fetch_channel(channel_id)
-        messages = []
-        for message in channel.history(limit=count):
-            messages.append(message)
-        context = []
-        for message in messages:
-            context.append({
+    async def build_messages(self, channel_id, count):
+        messages = [{
+            "role": "system", "content": f"You are my pithy friend. Keep your response under {self.response_tokens} tokens."
+             }]
+        channel = await self.fetch_channel(channel_id)
+        message_history = []
+        async for message in channel.history(limit=count):
+            message_history.append(message)
+        for message in message_history:
+            messages.insert(1, {
                 "role": "user",
-                "text": message.content
+                "content": message.content
             })
-        return context
+        return messages
 
-    def get_gpt_response(self, sys_prompt, usr_prompt, model, max_tokens, n_responses, creativity):
-        logging.info(f"System prompt:\n{sys_prompt}")
+    def get_gpt_response(self, messages, model, max_response_tokens, n_responses, creativity):
         try:
             completions = openai.ChatCompletion.create(
-                # "gpt-3.5-turbo", "gpt-4"
+                # "gpt-3.5-turbo", "gpt-4" set in the init file
                 model=model,
-                messages=[
-                    {"role": "system", "content": sys_prompt},
-                    {"role": "user", "content": usr_prompt},
-                ],
-                max_tokens=max_tokens,
+                messages = messages,  # from build_messages method
+                # messages=[
+                #     {"role": "system", "content": sys_prompt},
+                #     {"role": "user", "content": usr_prompt},
+                # ],
+                max_tokens = max_response_tokens,
                 n=n_responses,
                 stop=None,
                 # specifity < 0.5 > creativity
