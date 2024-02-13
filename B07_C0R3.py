@@ -104,7 +104,7 @@ class D15C0R6(commANDs.Bot):
                 response_text = self.get_gpt_response(self.messages, self.gpt_model, self.response_tokens, 2, 0.55)
                 if response_text:
                     self.add_to_messages(response_text, "assistant")
-                    logging.info(f"Message history:\n{self.messages}")
+                    logging.debug(f"Message history:\n{self.messages}")
                     await message.channel.send(response_text)
                 else:
                     logging.error("No response from get_gpt_response")
@@ -130,7 +130,7 @@ class D15C0R6(commANDs.Bot):
                 "role": "user",
                 "content": message
             })
-        if len(self.messages) >= 7:  # Keep 7 messages for example
+        if len(self.messages) > 7:  # Keep 7 messages for example
             del self.messages[1:2]
         return self.messages
 
